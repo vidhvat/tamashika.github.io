@@ -32,9 +32,14 @@ body {
 }
 
 .logo-spin {
-  width: max(5vw, 120px);
+  width: min(2.5vw, 75px);
   height: auto;
-  animation: spin 2.5s linear infinite;
+  animation: spin 1.5s linear infinite;
+}
+
+.logo-link,
+.logo-spin {
+  cursor: pointer;
 }
 
 @keyframes spin {

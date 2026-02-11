@@ -10,11 +10,21 @@
   <body>
     <canvas id="bg"></canvas>
     <main class="page">
-      <a href="https://store.steampowered.com/app/2996080/TAMASHIKA/">
+      <a href="https://store.steampowered.com/app/2996080/TAMASHIKA/" class="logo-link">
         <img src="yy.png" alt="TAMASHIKA" class="logo-spin" />
       </a>
     </main>
 
     <script src="shader.js"></script>
+    <script>
+      const TARGET_URL = 'https://store.steampowered.com/app/2996080/TAMASHIKA/';
+
+      document.addEventListener('click', function (event) {
+        if (event.target.closest('a')) {
+          return;
+        }
+        window.location.href = TARGET_URL;
+      });
+    </script>
   </body>
 </html>

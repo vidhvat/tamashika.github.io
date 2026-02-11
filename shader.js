@@ -1,4 +1,3 @@
-// === SHADER CODE: edit these strings ===
 const vertexShaderSource = `
   attribute vec2 a_position;
   varying vec2 v_uv;
@@ -16,18 +15,79 @@ const fragmentShaderSource = `
   uniform float u_time;
   varying vec2 v_uv;
 
+  float hashFractSin(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+  }
+
+  vec3 hsv2rgb(vec3 c) {
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+  }
+
+  float rangeClip(float value, float minVal, float maxVal) {
+    return step(minVal, value) * (1.0 - step(maxVal, value));
+  }
+
   void main() {
-    // Normalized coordinates (0..1)
-    vec2 uv = v_uv;
+    vec2 Dims = u_resolution;
+    float Fold = 0.96 + sin(u_time/1.0) * 0.001;              
+    float Time = u_time/4.0;
+    float Clock = u_time/4.0;           
 
-    // Simple example: animated gradient
-    float t = u_time * 0.2;
-    vec3 color = 0.5 + 0.5 * cos(6.28318 * vec3(uv.x + t, uv.y - t, t) + vec3(0.0, 2.0, 4.0));
+    const float RAINBOW_START = 64.0;
+    const float SKY_END = 12.0;
 
-    gl_FragColor = vec4(color, 1.0);
+    float scaling = Dims.x / Dims.y;
+    float fold = fract(Fold);
+    float temp = floor(Fold) / 100.0;
+    float rad = scaling * (1.0 - fold);
+    float bend = mix(2.0, 16.0, pow((1.0 - fold) / 2.0, 2.0));
+
+    vec2 texCoord = v_uv;
+    vec2 displacement = vec2(texCoord.x * scaling, texCoord.y) - vec2(0.5 * scaling, 0.5);
+
+    // In GLSL, pow(negative, non-integer) is undefined (NaN), so we need abs()
+    float distance = pow(abs(displacement.x / rad), bend) + pow(abs(displacement.y / rad), bend);
+
+    vec4 rainbow = mix(
+      vec4(hsv2rgb(vec3(Time + pow(abs(1.0 - (distance - RAINBOW_START) / 64.0), 8.0), 0.7, 1.0)), 1.0),
+      vec4(
+        hashFractSin(displacement),
+        hashFractSin(displacement + Time),
+        hashFractSin(displacement - Time),
+        1.0
+      ),
+      (distance - RAINBOW_START) / (256.0 - RAINBOW_START)
+    );
+    // rainbow += vec4(1.0) * rangeClip(distance, RAINBOW_START, 33.0);
+
+    float sunangle = -6.2831 * Clock - (fold - 1.0) * 3.141 * 0.75;
+    vec2 sunpos = vec2(sin(sunangle), cos(sunangle)) * 0.5 * fold;
+
+    float atmo = clamp(pow((distance - 1.2) / (SKY_END - 1.2), 2.0), 0.0, 1.0);
+    vec4 daybase = vec4(0.35, 0.73, 0.894, 0.25);
+    vec4 skycol = mix(daybase, daybase * 1.3, atmo);
+    vec4 heatshade = mix(vec4(0.95, 0.4, 0.25, 1.0), vec4(0.0, 0.0, 0.0, 0.0), (1.0 - atmo) * temp);
+    skycol = mix(skycol, heatshade, atmo * temp);
+
+    vec4 atmos = mix(
+      vec4(0.2, 0.2, 0.2, 0.0),
+      skycol,
+      pow(abs(1.0 - (distance - SKY_END) / (RAINBOW_START - SKY_END)), 16.0)
+    );
+
+    vec4 color =
+      vec4(1.0) * rangeClip(distance, 1.0, 1.2) +
+      skycol * rangeClip(distance, 1.2, SKY_END) +
+      atmos * rangeClip(distance, SKY_END, RAINBOW_START) +
+      rainbow * rangeClip(distance, RAINBOW_START, 2048.0);
+
+    gl_FragColor = color;
+    
+// gl_FragColor = vec4(vec3(distance / 100.0), 1.0);
   }
 `;
-// === END SHADER CODE ===
 
 const canvas = document.getElementById('bg');
 const gl = canvas && canvas.getContext('webgl');
