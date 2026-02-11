@@ -1,48 +1,47 @@
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    background-color: #d9f1c4;
-    font-family: 'Times New Roman', Times, serif;
-    color:black;  
+  min-height: 100vh;
+  background: #000;
+  color: #fff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+#bg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-spin {
+  width: max(5vw, 120px);
+  height: auto;
+  animation: spin 2.5s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
   }
-  h2{
-    font-style: italic;
+  to {
+    transform: rotate(360deg);
   }
-  .header{
-    float:right;
-  }
-  ul {
-    list-style: none;
-    padding-left: 0;
-    /* display:inline; */
-  }
-  ul li{
-    /* display:inline; */
-    margin:4px;
-  }
-  .App {
-    max-width: 100%;
-    margin-left: 8px;
-    margin-right: 8px;
-  }
-  
-  @media only screen and (max-width: 600px) {
-    .App {
-      max-width: 95%;
-      margin-left: 8px;
-      margin-right: 8px;
-    }
-  
-  }
-  
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  
-  /* Firefox */
-  input[type=number] {
-    -moz-appearance: textfield;
-  }
-  
+}
