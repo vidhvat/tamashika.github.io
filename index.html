@@ -20,7 +20,7 @@
       (function () {
         var d = new Date();
         var yyyymmdd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
-        fetch('https:api.tamashika.com/' + yyyymmdd)
+        fetch('https://api.tamashika.com/' + yyyymmdd)
           .then(function (r) { return r.json(); })
           .then(function (data) {
             if (data && typeof data.completes === 'number' && data.completes > 0) {
