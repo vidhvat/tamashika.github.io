@@ -37,8 +37,15 @@ body {
   animation: spin 1.5s linear infinite;
 }
 
+.logo-no-spin {
+  width: min(2.5vw, 75px);
+  height: auto;
+  animation: none;
+}
+
 .logo-link,
-.logo-spin {
+.logo-spin,
+.logo-no-spin {
   cursor: pointer;
 }
 

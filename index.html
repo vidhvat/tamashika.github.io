@@ -11,11 +11,30 @@
     <canvas id="bg"></canvas>
     <main class="page">
       <a href="https://store.steampowered.com/app/2996080/TAMASHIKA/" class="logo-link">
-        <img src="yy.png" alt="TAMASHIKA" class="logo-spin" />
+        <img id="logo" src="yy.png" alt="TAMASHIKA" class="logo-spin" />
       </a>
     </main>
 
     <script src="shader.js"></script>
+    <script>
+      (function () {
+        var d = new Date();
+        var yyyymmdd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+        fetch('http://207.148.29.9:8080/' + yyyymmdd)
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data && typeof data.completes === 'number' && data.completes > 0) {
+              var img = document.getElementById('logo');
+              if (img) {
+                img.src = 'heart.png';
+                img.classList.remove('logo-spin');
+                img.classList.add('logo-no-spin');
+              }
+            }
+          })
+          .catch(function () {});
+      })();
+    </script>
     <script>
       const TARGET_URL = 'https://store.steampowered.com/app/2996080/TAMASHIKA/';
 
