@@ -4,13 +4,28 @@
   margin: 0;
   padding: 0;
 }
-
+a{
+  cursor: none;
+}
 body {
   min-height: 100vh;
   background: #000;
   color: #fff;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overflow: hidden;
+  cursor:none;
+}
+.custom-cursor {
+  width: 0.5vw;
+  height: 0.5vw;
+  background-color: white;
+  border-radius: 50%;
+  outline: #000 solid 0.1vw;
+  position: fixed;
+  border-color: #000;
+  pointer-events: none; /* Makes it click-through */
+  transform: translate(-50%, -50%); /* Centers the dot */
+  z-index: 9999; /* Ensures it's on top */
 }
 
 #bg {
@@ -43,11 +58,11 @@ body {
   animation: none;
 }
 
-.logo-link,
+/* .logo-link,
 .logo-spin,
 .logo-no-spin {
-  cursor: pointer;
-}
+    cursor: pointer;
+} */
 
 @keyframes spin {
   from {

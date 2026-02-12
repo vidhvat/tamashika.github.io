@@ -8,6 +8,8 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   </head>
   <body>
+    <div class="custom-cursor"></div>
+    <!-- <div class="custom-cursor-outline"></div> -->
     <canvas id="bg"></canvas>
     <main class="page">
       <a href="https://store.steampowered.com/app/2996080/TAMASHIKA/" class="logo-link">
@@ -36,6 +38,13 @@
       })();
     </script>
     <script>
+      const cursor = document.querySelector('.custom-cursor');
+      // const cursor2 = document.querySelector('.custom-cursor-outline');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
       const TARGET_URL = 'https://store.steampowered.com/app/2996080/TAMASHIKA/';
 
       document.addEventListener('click', function (event) {
