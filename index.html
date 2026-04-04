@@ -12,10 +12,24 @@
     <!-- <div class="custom-cursor-outline"></div> -->
     <canvas id="bg"></canvas>
     <main class="page">
-      <a href="https://store.steampowered.com/app/2996080/TAMASHIKA/" class="logo-link">
-        <img id="logo" src="yy.png" alt="TAMASHIKA" class="logo-spin" />
-      </a>
+      <div class="page-stack">
+        <!-- <a href="https://store.steampowered.com/app/2996080/TAMASHIKA/" class="logo-link"> -->
+          <img id="logo" src="yy.png" alt="TAMASHIKA" class="logo-spin" />
+        <!-- </a> -->
+        <nav class="store-row" aria-label="Store links">
+          <!-- Replace href with your URLs -->
+          <a href="#" class="store-btn" title="PlayStation"><img src="ps_icon.png" alt="PlayStation" /></a>
+          <a href="https://store.steampowered.com/app/2996080/TAMASHIKA/" class="store-btn" title="Steam"><img src="steam_icon.png" alt="Steam" /></a>
+          <a href="https://www.nintendo.com/us/store/products/tamashika-switch/" class="store-btn" title="Nintendo Switch"><img src="switch_icon.png" alt="Nintendo Switch" /></a>
+          <a href="#" class="store-btn" title="Xbox"><img src="xbox_icon.png" alt="Xbox" /></a>
+        </nav>
+      </div>
     </main>
+
+    <aside class="company-logos" aria-label="Company logos">
+      <a href="https://quicktequila.com"><img src="company.png" alt="Company" class="company-logo company-logo--left" /></a>
+      <a href="https://edglrd.com"><img src="publisher.png" alt="Publisher" class="company-logo company-logo--right" /></a>
+    </aside>
 
     <script src="shader.js"></script>
     <script>
@@ -47,12 +61,12 @@
         });
       const TARGET_URL = 'https://store.steampowered.com/app/2996080/TAMASHIKA/';
 
-      document.addEventListener('click', function (event) {
-        if (event.target.closest('a')) {
-          return;
-        }
-        window.location.href = TARGET_URL;
-      });
+      // document.addEventListener('click', function (event) {
+      //   if (event.target.closest('a')) {
+      //     return;
+      //   }
+      //   window.location.href = TARGET_URL;
+      // });
     </script>
   </body>
 </html>
