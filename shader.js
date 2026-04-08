@@ -45,7 +45,11 @@ const fragmentShaderSource = `
     float bend = mix(2.0, 16.0, pow((1.0 - fold) / 2.0, 2.0));
 
     vec2 texCoord = v_uv;
-    vec2 displacement = vec2(texCoord.x * scaling, texCoord.y) - vec2(0.5 * scaling, 0.5);
+    vec2 displacement = (vec2(texCoord.x * scaling, texCoord.y) - vec2(0.5 * scaling, 0.5));
+    // Portrait (taller than wide): zoom the pattern ~2x; tweak PORTRAIT_DISP_SCALE as you like
+    const float PORTRAIT_DISP_SCALE = 0.5;
+    float dispScale = mix(1.0, PORTRAIT_DISP_SCALE, step(Dims.x, Dims.y));
+    displacement *= dispScale;
 
     // In GLSL, pow(negative, non-integer) is undefined (NaN), so we need abs()
     float distance = pow(abs(displacement.x / rad), bend) + pow(abs(displacement.y / rad), bend);
