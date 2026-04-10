@@ -35,6 +35,34 @@ body {
   z-index: 0;
 }
 
+.intro-blurb {
+  position: fixed;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.28);
+  width: 50%;
+  max-width: 42rem;
+  z-index: 2;
+  text-align: center;
+  font-size: clamp(0.7rem, 1.15vw, 0.9rem);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 0, 0, 0.35);
+}
+
+.intro-blurb p {
+  margin: 0;
+}
+
+.intro-blurb b {
+  font-weight: 800;
+}
+.intro-blurb a {
+  text-decoration: underline;
+  color : rgba(255, 255, 255, 0.88)
+}
+
 .page {
   position: fixed;
   inset: 0;
@@ -149,6 +177,11 @@ body {
 }
 
 @media (orientation: portrait) {
+  .intro-blurb {
+    width: 75%;
+    max-width: none;
+  }
+
   .bottom-row {
     bottom: clamp(1.5rem, 5.5vh, 3rem);
     gap: clamp(0.35rem, 2.5vw, 0.85rem);
