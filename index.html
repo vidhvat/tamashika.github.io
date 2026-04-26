@@ -12,9 +12,9 @@
     <!-- <div class="custom-cursor-outline"></div> -->
     <canvas id="bg"></canvas>
     <div class="intro-blurb">
-      <p>
+      <!-- <p>
         <b>LEADERBOARD CHALLENGE</b><br/> DURING THE FIRST WEEK OF THE GAME’S RELEASE (FRIDAY, APRIL 10 THROUGH THURSDAY, APRIL 16), THE TOP PLAYER ON THE DAILY GLOBAL LEADERBOARD ACROSS ALL PLATFORMS WILL RECEIVE A TAMASHIKA <a href = "https://edglrd.com/shop/products/tamashika-plushie">PLUSHIE</a>.
-      </p>
+      </p> -->
     </div>
     <main class="page">
       <div class="page-stack">
@@ -61,6 +61,92 @@
       })();
     </script>
     <script>
+      // Optional display overrides for event tags: raw tag -> label shown in pill.
+      const EVENT_TAG_LABELS = {
+        "FullMoon":"FULLMOON 🌕",
+        "Uzi":"MAC11 ✨",
+        "Shiruken":"SHIRUKEN ✨",
+        "CP1":"NC1️⃣",
+        "CP2":"NC2️⃣",
+      };
+      const EVENT_TAG_ALT_TEXT = {
+        "FullMoon":"Moon Cycle",
+        "Uzi":"Weapon",
+        "Shiruken":"Weapon",
+        "CP1":"New Content",
+        "CP2":"New Content",
+      };
+
+      fetch('timeline.json')
+        .then(r => r.json())
+        .then(raw => {
+          runIntroEvents(raw || {});
+        })
+        .catch(function () {});
+
+      function runIntroEvents(eventsByDate) {
+        const introBlurb = document.querySelector('.intro-blurb');
+        if (!introBlurb) return;
+
+        function getDateKey(d) {
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          return year + '-' + month + '-' + day;
+        }
+
+        function toMmDd(date) {
+          const mm = String(date.getMonth() + 1).padStart(2, '0');
+          const dd = String(date.getDate()).padStart(2, '0');
+          return mm + '/' + dd;
+        }
+
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        const startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - 2);
+
+        const entries = [];
+        for (let i = 0; i < 370 && entries.length < 5; i++) {
+          const current = new Date(startDate);
+          current.setDate(current.getDate() + i);
+          const tags = eventsByDate[getDateKey(current)] || [];
+          for (const tag of tags) {
+            const rawTag = String(tag);
+            const translatedTag = EVENT_TAG_LABELS[rawTag] || rawTag;
+            entries.push({ date: toMmDd(current), tag: translatedTag ,alt :EVENT_TAG_ALT_TEXT[rawTag]||""});
+            if (entries.length === 3) break;
+          }
+        }
+
+        introBlurb.innerHTML = '';
+        if (entries.length === 0) return;
+
+        const row = document.createElement('div');
+        row.className = 'intro-events-row';
+
+        entries.forEach(entry => {
+          const chip = document.createElement('div');
+          chip.className = 'intro-event-chip';
+
+          const dateEl = document.createElement('span');
+          dateEl.className = 'intro-event-date';
+          dateEl.textContent = entry.date;
+
+          const tagEl = document.createElement('span');
+          tagEl.className = 'intro-event-tag';
+          tagEl.textContent = entry.tag;
+          tagEl.title = entry.alt;
+
+
+          chip.appendChild(dateEl);
+          chip.appendChild(tagEl);
+          row.appendChild(chip);
+        });
+
+        introBlurb.appendChild(row);
+      }
       // const cursor = document.querySelector('.custom-cursor');
       // // const cursor2 = document.querySelector('.custom-cursor-outline');
 
