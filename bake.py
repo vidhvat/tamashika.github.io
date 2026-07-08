@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 
-DEFAULT_INPUT_JSON = Path(r"C:\Users\vidhv\rungun\timeline_bake.json")
+DEFAULT_INPUT_JSON = Path(r"C:\Users\Vidhvat\Projects\rungun\timeline_bake.json")
 DEFAULT_OUTPUT_JS = Path(r"timeline.json")
 DATE_FORMAT = "%Y-%m-%d"
 BAKE_UPPER_LIMIT_DATE: str | None = "2026-10-01"

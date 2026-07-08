@@ -66,8 +66,8 @@
         "FullMoon":"FULLMOON 🌕",
         "Uzi":"MAC11 ✨",
         "Shiruken":"SHIRUKEN ✨",
-        "CP1":"1️⃣",
-        "CP2":"2️⃣",
+        // "CP1":"1️⃣",
+        "CP2":"🆕",
         "Item":"🎁",
         "Jumpad":"🤸‍♂️",
       };
@@ -75,8 +75,8 @@
         "FullMoon":"Moon Cycle",
         "Uzi":"Weapon",
         "Shiruken":"Weapon",
-        "CP1":"New Content 1",
-        "CP2":"New Content 2",
+        // "CP1":"New Content 1",
+        "CP2":"New Content",
         "Item":"Pickup",
         "Jumpad":"Jumpad",
       };
@@ -109,7 +109,7 @@
         now.setHours(0, 0, 0, 0);
 
         const startDate = new Date(now);
-        startDate.setDate(startDate.getDate() - 2);
+        startDate.setDate(startDate.getDate() - 1);
 
         const entries = [];
         for (let i = 0; i < 370 && entries.length < 5; i++) {
@@ -124,15 +124,19 @@
             tags = dateData.Flags || [];
             itemCount = dateData.Items || 0;
           }
-          if (tags.length > 0) {
-            const tagLabels = tags.map(tag => {
+          const visibleTags = tags.filter(tag => {
+            return Object.prototype.hasOwnProperty.call(EVENT_TAG_LABELS, String(tag));
+          });
+
+          if (visibleTags.length > 0) {
+            const tagLabels = visibleTags.map(tag => {
               let label = EVENT_TAG_LABELS[String(tag)] || String(tag);
               if (String(tag) === 'Item' && itemCount > 0) {
                 label += '×' + itemCount;
               }
               return label;
             }).join(' ');
-            const altTexts = tags.map(tag => {
+            const altTexts = visibleTags.map(tag => {
               let a = EVENT_TAG_ALT_TEXT[String(tag)] || '';
               if (String(tag) === 'Item' && itemCount > 0) {
                 a += (a ? ' ' : '') + '(' + itemCount + ')';
