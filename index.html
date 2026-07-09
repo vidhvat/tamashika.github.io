@@ -81,21 +81,21 @@
         "Jumpad":"Jumpad",
       };
 
-      fetch('timeline.json')
-        .then(r => r.json())
-        .then(raw => {
-          runIntroEvents(raw || {},true);
-        })
-        .catch(function () {});
+      let introEventRowMode = 0;
 
-        fetch('timeline_main.json')
-        .then(r => r.json())
-        .then(raw => {
-          runIntroEvents(raw || {});
-        })
-        .catch(function () {});
+      function getIntroTimelinePath(mode) {
+        return mode === 0 ? 'timeline.json' : 'timeline_consoles.json';
+      }
 
-      function runIntroEvents(eventsByDate,primary=false) {
+      function getIntroPlatformIcon(mode) {
+        return ['steam_icon.png', 'ps_icon.png', 'switch_icon.png', 'xbox_icon.png'][mode] || 'steam_icon.png';
+      }
+
+      function getIntroPlatformAlt(mode) {
+        return ['Steam', 'PlayStation', 'Nintendo Switch', 'Xbox'][mode] || 'Steam';
+      }
+
+      function runIntroEvents(eventsByDate, mode = 0) {
         const introBlurb = document.querySelector('.intro-blurb');
         if (!introBlurb) return;
 
@@ -157,23 +157,25 @@
             });
           }
         }
-   
 
-        // introBlurb.innerHTML = '';
+        introBlurb.innerHTML = '';
         if (entries.length === 0) return;
 
         const row = document.createElement('div');
         row.className = 'intro-events-row';
-          const chip = document.createElement('div');
-          chip.className = 'intro-event-chip';
-          const platform = document.createElement('img');
-          if(primary)
-            platform.src = 'steam_icon.png';
-          else
-            platform.src = 'ps_icon.png';//pick between ps_icon.png switch_icon.png xbox_icon.png;
-          // steamImg.alt = 'Steam';
-          chip.appendChild(platform);
-          row.appendChild(chip);
+
+        const chip = document.createElement('div');
+        chip.className = 'intro-event-chip';
+        chip.style.cursor = 'pointer';
+        const platform = document.createElement('img');
+        platform.src = getIntroPlatformIcon(mode);
+        platform.alt = getIntroPlatformAlt(mode);
+        platform.addEventListener('click', function () {
+          introEventRowMode = (introEventRowMode + 1) % 4;
+          runIntroEventsRow(introEventRowMode);
+        });
+        chip.appendChild(platform);
+        row.appendChild(chip);
 
         entries.forEach(entry => {
           const chip = document.createElement('div');
@@ -195,6 +197,18 @@
 
         introBlurb.appendChild(row);
       }
+
+      function runIntroEventsRow(mode = 0) {
+        introEventRowMode = mode;
+        fetch(getIntroTimelinePath(mode))
+          .then(r => r.json())
+          .then(raw => {
+            runIntroEvents(raw || {}, mode);
+          })
+          .catch(function () {});
+      }
+
+      runIntroEventsRow(0);
       // const cursor = document.querySelector('.custom-cursor');
       // // const cursor2 = document.querySelector('.custom-cursor-outline');
 
