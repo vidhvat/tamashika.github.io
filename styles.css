@@ -43,7 +43,10 @@ body {
   z-index: 2;
   text-align: center;
 }
-
+.intro-blurb img {
+  margin: 0;
+  height:2em;
+}
 .intro-blurb p {
   margin: 0;
 }
@@ -61,6 +64,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
+  margin-bottom: 2em;
   flex-wrap: wrap;
 }
 

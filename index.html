@@ -84,11 +84,18 @@
       fetch('timeline.json')
         .then(r => r.json())
         .then(raw => {
+          runIntroEvents(raw || {},true);
+        })
+        .catch(function () {});
+
+        fetch('timeline_main.json')
+        .then(r => r.json())
+        .then(raw => {
           runIntroEvents(raw || {});
         })
         .catch(function () {});
 
-      function runIntroEvents(eventsByDate) {
+      function runIntroEvents(eventsByDate,primary=false) {
         const introBlurb = document.querySelector('.intro-blurb');
         if (!introBlurb) return;
 
@@ -152,11 +159,21 @@
         }
    
 
-        introBlurb.innerHTML = '';
+        // introBlurb.innerHTML = '';
         if (entries.length === 0) return;
 
         const row = document.createElement('div');
         row.className = 'intro-events-row';
+          const chip = document.createElement('div');
+          chip.className = 'intro-event-chip';
+          const platform = document.createElement('img');
+          if(primary)
+            platform.src = 'steam_icon.png';
+          else
+            platform.src = 'ps_icon.png';//pick between ps_icon.png switch_icon.png xbox_icon.png;
+          // steamImg.alt = 'Steam';
+          chip.appendChild(platform);
+          row.appendChild(chip);
 
         entries.forEach(entry => {
           const chip = document.createElement('div');
@@ -170,7 +187,6 @@
           tagEl.className = 'intro-event-tag';
           tagEl.textContent = entry.tag;
           tagEl.title = entry.alt;
-
 
           chip.appendChild(dateEl);
           chip.appendChild(tagEl);
