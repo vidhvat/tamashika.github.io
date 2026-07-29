@@ -43,9 +43,57 @@
     <script src="shader.js"></script>
     <script>
       (function () {
+        // Render a very small, simple horizontal bar histogram beneath the events row.
+        function renderHistogram(hist) {
+          try {
+            if (!Array.isArray(hist) || hist.length === 0) return;
+            var container = document.querySelector('.intro-blurb');
+            if (!container) return;
+
+            // remove existing histogram if present
+            var existing = container.querySelector('.intro-histogram');
+            if (existing) existing.remove();
+
+            var wrapper = document.createElement('div');
+            wrapper.className = 'intro-histogram';
+
+            var max = Math.max.apply(null, hist.map(h => (typeof h === 'number' ? h : 0)));
+            if (!isFinite(max) || max <= 0) max = 1;
+
+            hist.forEach(function (value, i) {
+              var barWrap = document.createElement('div');
+              barWrap.className = 'intro-histogram-barwrap';
+
+              var bar = document.createElement('div');
+              bar.className = 'intro-histogram-bar';
+              var v = (typeof value === 'number' ? value : 0);
+              bar.style.width = Math.round((v / max) * 100) + '%';
+              bar.title = String(v);
+
+              var idx = document.createElement('div');
+              idx.className = 'intro-histogram-index';
+              idx.textContent = i + 1;
+
+              barWrap.appendChild(idx);
+              barWrap.appendChild(bar);
+              wrapper.appendChild(barWrap);
+            });
+
+            // place after the events row if present, otherwise just append
+            var eventsRow = container.querySelector('.intro-events-row');
+            if (eventsRow && eventsRow.parentNode) {
+              eventsRow.insertAdjacentElement('afterend', wrapper);
+            } else {
+              container.appendChild(wrapper);
+            }
+          } catch (e) {
+            // silent
+          }
+        }
+
         var d = new Date();
         var yyyymmdd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
-        fetch('https://api.tamashika.com/' + yyyymmdd)
+        fetch('http://207.148.29.9:8080/' + yyyymmdd)
           .then(function (r) { return r.json(); })
           .then(function (data) {
             if (data && typeof data.completes === 'number' && data.completes > 0) {
@@ -55,6 +103,14 @@
                 img.classList.remove('logo-spin');
                 img.classList.add('logo-no-spin');
               }
+            }
+
+            // expose globally so other init code can render after timeline loads
+            window.__leaderboardHistogram = Array.isArray(data && data.histogram) ? data.histogram : null;
+
+            // try to render immediately if possible
+            if (window.__leaderboardHistogram) {
+              renderHistogram(window.__leaderboardHistogram);
             }
           })
           .catch(function () {});
@@ -70,6 +126,7 @@
         "CP2":"🆕",
         "Item":"🎁",
         "Jumpad":"🤸‍♂️",
+        "Tunnel":"🔐"
       };
       const EVENT_TAG_ALT_TEXT = {
         "FullMoon":"Moon Cycle",
@@ -79,6 +136,7 @@
         "CP2":"New Content",
         "Item":"Pickup",
         "Jumpad":"Jumpad",
+        "Tunnel":"Tunnel",
       };
 
       let introEventRowMode = 0;
@@ -196,6 +254,11 @@
         });
 
         introBlurb.appendChild(row);
+
+        // If histogram data was loaded earlier, render it now beneath the events row.
+        if (window && window.__leaderboardHistogram) {
+          try { renderHistogram(window.__leaderboardHistogram); } catch (e) {}
+        }
       }
 
       function runIntroEventsRow(mode = 0) {
